@@ -1,7 +1,21 @@
+import re
 import sys
+
+VALID_COURSES = frozenset({"GES", "GEC", "GET", "GEP"})
+EMAIL_PATTERN = re.compile(
+    r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+)
 
 students = []
 enrollment_counters = {}
+
+
+def is_valid_email(email):
+    return bool(EMAIL_PATTERN.match(email.strip()))
+
+
+def is_valid_course(course):
+    return course.strip().upper() in VALID_COURSES
 
 
 def generate_enrollment_id(course):
@@ -26,12 +40,16 @@ def register_student():
         print("Invalid name.")
         return
     email = input("Email: ").strip()
-    if not email:
-        print("Invalid email.")
+    if not email or not is_valid_email(email):
+        print("Invalid email. Use a valid address (e.g. name@domain.com).")
         return
     course = input("Course (e.g. GES, GEC, GET, GEP): ").strip().upper()
-    if not course:
-        print("Invalid course.")
+    if not is_valid_course(course):
+        print(
+            "Invalid course. Must be one of: "
+            + ", ".join(sorted(VALID_COURSES))
+            + "."
+        )
         return
     enrollment_id = generate_enrollment_id(course)
     students.append(
@@ -65,6 +83,16 @@ def update_student():
     name = input(f"Name [{s['name']}]: ").strip()
     email = input(f"Email [{s['email']}]: ").strip()
     course = input(f"Course [{s['course']}]: ").strip().upper()
+    if email and not is_valid_email(email):
+        print("Invalid email. Use a valid address (e.g. name@domain.com).")
+        return
+    if course and course != s["course"] and not is_valid_course(course):
+        print(
+            "Invalid course. Must be one of: "
+            + ", ".join(sorted(VALID_COURSES))
+            + "."
+        )
+        return
     if name:
         s["name"] = name
     if email:
