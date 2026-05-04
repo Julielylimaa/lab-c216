@@ -1,13 +1,13 @@
-**Resumo**: 7 passed, 0 failed, 0 skipped, 7 total
+**Resumo**: 9 passed, 0 failed, 0 skipped, 9 total
 
 # Relatório de testes (pytest)
 
-- Gerado em: 2026-04-21T19:15:32.258930+00:00
+- Gerado em: 2026-05-04T17:16:20.157601+00:00
 - Exit status: 0
 
 ## O que foi validado
 
-- CRUD básico de **estudantes** (criação, listagem, PUT, PATCH, DELETE).
+- CRUD de **alunos** em `/api/v1/alunos/` (criação, listagem, GET por ID, PATCH, DELETE, reset).
 - CRUD básico de **matérias** (criação, listagem com `enrolled_count`).
 - **Matrícula** e **desmatrícula** de estudante em matéria.
 - **Contagem** de matriculados por matéria (`enrolled_count`) após mudanças.
@@ -16,30 +16,256 @@
 
 ## Resultados por teste (o que passou e retornos)
 
-### test_create_student_and_list_students
+### test_atividade_tres_alunos_por_curso_listagem_busca_patch_delete
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **POST /students** → **201**
+  - **POST /api/v1/alunos/** → **201**
 
 ```json
 {
-  "course": "GES",
-  "email": "ana@example.com",
-  "id": "stu_1",
-  "name": "Ana",
+  "curso": "GES",
+  "email": "ges0@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Aluno GES 0",
   "subject_ids": []
 }
 ```
-  - **GET /students** → **200**
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "ges1@example.com",
+  "id": "GES2",
+  "matricula": 2,
+  "nome": "Aluno GES 1",
+  "subject_ids": []
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "ges2@example.com",
+  "id": "GES3",
+  "matricula": 3,
+  "nome": "Aluno GES 2",
+  "subject_ids": []
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GEC",
+  "email": "gec0@example.com",
+  "id": "GEC1",
+  "matricula": 1,
+  "nome": "Aluno GEC 0",
+  "subject_ids": []
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GEC",
+  "email": "gec1@example.com",
+  "id": "GEC2",
+  "matricula": 2,
+  "nome": "Aluno GEC 1",
+  "subject_ids": []
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GEC",
+  "email": "gec2@example.com",
+  "id": "GEC3",
+  "matricula": 3,
+  "nome": "Aluno GEC 2",
+  "subject_ids": []
+}
+```
+  - **GET /api/v1/alunos/** → **200**
 
 ```json
 [
   {
-    "course": "GES",
+    "curso": "GES",
+    "email": "ges0@example.com",
+    "id": "GES1",
+    "matricula": 1,
+    "nome": "Aluno GES 0",
+    "subject_ids": []
+  },
+  {
+    "curso": "GES",
+    "email": "ges1@example.com",
+    "id": "GES2",
+    "matricula": 2,
+    "nome": "Aluno GES 1",
+    "subject_ids": []
+  },
+  {
+    "curso": "GES",
+    "email": "ges2@example.com",
+    "id": "GES3",
+    "matricula": 3,
+    "nome": "Aluno GES 2",
+    "subject_ids": []
+  },
+  {
+    "curso": "GEC",
+    "email": "gec0@example.com",
+    "id": "GEC1",
+    "matricula": 1,
+    "nome": "Aluno GEC 0",
+    "subject_ids": []
+  },
+  {
+    "curso": "GEC",
+    "email": "gec1@example.com",
+    "id": "GEC2",
+    "matricula": 2,
+    "nome": "Aluno GEC 1",
+    "subject_ids": []
+  },
+  {
+    "curso": "GEC",
+    "email": "gec2@example.com",
+    "id": "GEC3",
+    "matricula": 3,
+    "nome": "Aluno GEC 2",
+    "subject_ids": []
+  }
+]
+```
+  - **GET /api/v1/alunos/GES1** → **200**
+
+```json
+{
+  "curso": "GES",
+  "email": "ges0@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Aluno GES 0",
+  "subject_ids": []
+}
+```
+  - **PATCH /api/v1/alunos/GES1** → **200**
+
+```json
+{
+  "curso": "GES",
+  "email": "ges0@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Atualizado GES",
+  "subject_ids": []
+}
+```
+  - **DELETE /api/v1/alunos/GES1** → **200**
+
+```json
+{
+  "id": "GES1",
+  "status": "deleted"
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "novoges@example.com",
+  "id": "GES4",
+  "matricula": 4,
+  "nome": "Novo GES",
+  "subject_ids": []
+}
+```
+
+### test_delete_todos_alunos_nao_reinicia_contador_de_matricula
+
+- Resultado: **passed**
+- Chamadas e retornos:
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "a1@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "A",
+  "subject_ids": []
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "b1@example.com",
+  "id": "GES2",
+  "matricula": 2,
+  "nome": "B",
+  "subject_ids": []
+}
+```
+  - **DELETE /api/v1/alunos/** → **200**
+
+```json
+{
+  "removidos": 2,
+  "status": "reset"
+}
+```
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "c1@example.com",
+  "id": "GES3",
+  "matricula": 3,
+  "nome": "C",
+  "subject_ids": []
+}
+```
+
+### test_create_student_and_list_students
+
+- Resultado: **passed**
+- Chamadas e retornos:
+  - **POST /api/v1/alunos/** → **201**
+
+```json
+{
+  "curso": "GES",
+  "email": "ana@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Ana",
+  "subject_ids": []
+}
+```
+  - **GET /api/v1/alunos/** → **200**
+
+```json
+[
+  {
+    "curso": "GES",
     "email": "ana@example.com",
-    "id": "stu_1",
-    "name": "Ana",
+    "id": "GES1",
+    "matricula": 1,
+    "nome": "Ana",
     "subject_ids": []
   }
 ]
@@ -49,7 +275,7 @@
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **POST /students** → **422**
+  - **POST /api/v1/alunos/** → **422**
 
 ```json
 {
@@ -63,7 +289,7 @@
         "body",
         "email"
       ],
-      "msg": "Value error, Invalid email. Use a valid address (e.g. name@domain.com).",
+      "msg": "Value error, E-mail inválido. Use um endereço válido (ex.: nome@dominio.com).",
       "type": "value_error"
     }
   ]
@@ -103,14 +329,15 @@
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **POST /students** → **201**
+  - **POST /api/v1/alunos/** → **201**
 
 ```json
 {
-  "course": "GES",
+  "curso": "GES",
   "email": "ana@example.com",
-  "id": "stu_1",
-  "name": "Ana",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Ana",
   "subject_ids": []
 }
 ```
@@ -125,35 +352,36 @@
   "name": "Cálculo I"
 }
 ```
-  - **PUT /subjects/sub_1/enroll/stu_1** → **200**
+  - **PUT /subjects/sub_1/enroll/GES1** → **200**
 
 ```json
 {
   "code": "MAT101",
   "enrolled_count": 1,
   "enrolled_student_ids": [
-    "stu_1"
+    "GES1"
   ],
   "id": "sub_1",
   "name": "Cálculo I"
 }
 ```
-  - **GET /students** → **200**
+  - **GET /api/v1/alunos/** → **200**
 
 ```json
 [
   {
-    "course": "GES",
+    "curso": "GES",
     "email": "ana@example.com",
-    "id": "stu_1",
-    "name": "Ana",
+    "id": "GES1",
+    "matricula": 1,
+    "nome": "Ana",
     "subject_ids": [
       "sub_1"
     ]
   }
 ]
 ```
-  - **PATCH /subjects/sub_1/unenroll/stu_1** → **200**
+  - **PATCH /subjects/sub_1/unenroll/GES1** → **200**
 
 ```json
 {
@@ -165,40 +393,43 @@
 }
 ```
 
-### test_put_and_patch_student
+### test_patch_aluno_nome_e_troca_de_curso_novo_id
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **POST /students** → **201**
+  - **POST /api/v1/alunos/** → **201**
 
 ```json
 {
-  "course": "GES",
+  "curso": "GES",
   "email": "ana@example.com",
-  "id": "stu_1",
-  "name": "Ana",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Ana",
   "subject_ids": []
 }
 ```
-  - **PUT /students/stu_1** → **200**
+  - **PATCH /api/v1/alunos/GES1** → **200**
 
 ```json
 {
-  "course": "GET",
-  "email": "anamaria@example.com",
-  "id": "stu_1",
-  "name": "Ana Maria",
+  "curso": "GES",
+  "email": "ana@example.com",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Ana M.",
   "subject_ids": []
 }
 ```
-  - **PATCH /students/stu_1** → **200**
+  - **PATCH /api/v1/alunos/GES1** → **200**
 
 ```json
 {
-  "course": "GET",
-  "email": "anamaria@example.com",
-  "id": "stu_1",
-  "name": "Ana M.",
+  "curso": "GEC",
+  "email": "ana@example.com",
+  "id": "GEC1",
+  "matricula": 1,
+  "nome": "Ana M.",
   "subject_ids": []
 }
 ```
@@ -207,14 +438,15 @@
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **POST /students** → **201**
+  - **POST /api/v1/alunos/** → **201**
 
 ```json
 {
-  "course": "GES",
+  "curso": "GES",
   "email": "ana@example.com",
-  "id": "stu_1",
-  "name": "Ana",
+  "id": "GES1",
+  "matricula": 1,
+  "nome": "Ana",
   "subject_ids": []
 }
 ```
@@ -229,14 +461,14 @@
   "name": "Cálculo I"
 }
 ```
-  - **PUT /subjects/sub_1/enroll/stu_1** → **200**
+  - **PUT /subjects/sub_1/enroll/GES1** → **200**
 
 ```json
 {
   "code": "MAT101",
   "enrolled_count": 1,
   "enrolled_student_ids": [
-    "stu_1"
+    "GES1"
   ],
   "id": "sub_1",
   "name": "Cálculo I"
@@ -250,18 +482,18 @@
     "code": "MAT101",
     "enrolled_count": 1,
     "enrolled_student_ids": [
-      "stu_1"
+      "GES1"
     ],
     "id": "sub_1",
     "name": "Cálculo I"
   }
 ]
 ```
-  - **DELETE /students/stu_1** → **200**
+  - **DELETE /api/v1/alunos/GES1** → **200**
 
 ```json
 {
-  "id": "stu_1",
+  "id": "GES1",
   "status": "deleted"
 }
 ```
@@ -283,10 +515,10 @@
 
 - Resultado: **passed**
 - Chamadas e retornos:
-  - **DELETE /students/stu_999** → **404**
+  - **DELETE /api/v1/alunos/GES999** → **404**
 
 ```json
 {
-  "error": "Student not found."
+  "error": "Aluno não encontrado."
 }
 ```

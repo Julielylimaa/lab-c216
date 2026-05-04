@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 
-VALID_COURSES = frozenset({"GES", "GEC", "GET", "GEP"})
+ALUNO_CURSOS = frozenset({"GES", "GEC"})
 EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 SUBJECT_CODE_PATTERN = re.compile(r"^[A-Z]{2,10}\d{0,6}$")
 
@@ -15,44 +15,40 @@ class ApiError(BaseModel):
     error: str
 
 
-class StudentCreate(BaseModel):
-    name: str = Field(min_length=1, max_length=120)
+class AlunoCreate(BaseModel):
+    nome: str = Field(min_length=1, max_length=120)
     email: str = Field(min_length=3, max_length=254)
-    course: str = Field(min_length=2, max_length=10)
+    curso: str = Field(min_length=3, max_length=3)
 
     @field_validator("email")
     @classmethod
     def validate_email(cls, v: str) -> str:
         email = v.strip()
         if not EMAIL_PATTERN.match(email):
-            raise ValueError("Invalid email. Use a valid address (e.g. name@domain.com).")
+            raise ValueError("E-mail inválido. Use um endereço válido (ex.: nome@dominio.com).")
         return email
 
-    @field_validator("course")
+    @field_validator("curso")
     @classmethod
-    def validate_course(cls, v: str) -> str:
-        course = v.strip().upper()
-        if course not in VALID_COURSES:
-            raise ValueError(f"Invalid course. Must be one of: {', '.join(sorted(VALID_COURSES))}.")
-        return course
+    def validate_curso(cls, v: str) -> str:
+        curso = v.strip().upper()
+        if curso not in ALUNO_CURSOS:
+            raise ValueError(f"Curso inválido. Use um de: {', '.join(sorted(ALUNO_CURSOS))}.")
+        return curso
 
-    @field_validator("name")
+    @field_validator("nome")
     @classmethod
-    def normalize_name(cls, v: str) -> str:
-        name = v.strip()
-        if not name:
-            raise ValueError("Invalid name.")
-        return name
+    def normalize_nome(cls, v: str) -> str:
+        nome = v.strip()
+        if not nome:
+            raise ValueError("Nome inválido.")
+        return nome
 
 
-class StudentPut(StudentCreate):
-    pass
-
-
-class StudentPatch(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=120)
+class AlunoPatch(BaseModel):
+    nome: str | None = Field(default=None, min_length=1, max_length=120)
     email: str | None = Field(default=None, min_length=3, max_length=254)
-    course: str | None = Field(default=None, min_length=2, max_length=10)
+    curso: str | None = Field(default=None, min_length=3, max_length=3)
 
     @field_validator("email")
     @classmethod
@@ -61,35 +57,36 @@ class StudentPatch(BaseModel):
             return None
         email = v.strip()
         if not EMAIL_PATTERN.match(email):
-            raise ValueError("Invalid email. Use a valid address (e.g. name@domain.com).")
+            raise ValueError("E-mail inválido. Use um endereço válido (ex.: nome@dominio.com).")
         return email
 
-    @field_validator("course")
+    @field_validator("curso")
     @classmethod
-    def validate_course_optional(cls, v: str | None) -> str | None:
+    def validate_curso_optional(cls, v: str | None) -> str | None:
         if v is None:
             return None
-        course = v.strip().upper()
-        if course not in VALID_COURSES:
-            raise ValueError(f"Invalid course. Must be one of: {', '.join(sorted(VALID_COURSES))}.")
-        return course
+        curso = v.strip().upper()
+        if curso not in ALUNO_CURSOS:
+            raise ValueError(f"Curso inválido. Use um de: {', '.join(sorted(ALUNO_CURSOS))}.")
+        return curso
 
-    @field_validator("name")
+    @field_validator("nome")
     @classmethod
-    def normalize_name_optional(cls, v: str | None) -> str | None:
+    def normalize_nome_optional(cls, v: str | None) -> str | None:
         if v is None:
             return None
-        name = v.strip()
-        if not name:
-            raise ValueError("Invalid name.")
-        return name
+        nome = v.strip()
+        if not nome:
+            raise ValueError("Nome inválido.")
+        return nome
 
 
-class StudentOut(BaseModel):
+class AlunoOut(BaseModel):
     id: str
-    name: str
+    nome: str
     email: str
-    course: str
+    curso: str
+    matricula: int
     subject_ids: list[str]
 
 
@@ -122,6 +119,11 @@ class SubjectOut(BaseModel):
     enrolled_student_ids: list[str] = Field(default_factory=list)
 
 
-class DeleteStudentResponse(BaseModel):
+class DeleteAlunoResponse(BaseModel):
     status: Literal["deleted"]
     id: str
+
+
+class ResetAlunosResponse(BaseModel):
+    status: Literal["reset"]
+    removidos: int

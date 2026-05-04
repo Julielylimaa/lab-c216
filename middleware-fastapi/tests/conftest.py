@@ -116,7 +116,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int):
     lines.append("")
     lines.append("## O que foi validado")
     lines.append("")
-    lines.append("- CRUD básico de **estudantes** (criação, listagem, PUT, PATCH, DELETE).")
+    lines.append("- CRUD de **alunos** em `/api/v1/alunos/` (criação, listagem, GET por ID, PATCH, DELETE, reset).")
     lines.append("- CRUD básico de **matérias** (criação, listagem com `enrolled_count`).")
     lines.append("- **Matrícula** e **desmatrícula** de estudante em matéria.")
     lines.append("- **Contagem** de matriculados por matéria (`enrolled_count`) após mudanças.")

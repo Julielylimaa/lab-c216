@@ -1,21 +1,23 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.responses import JSONResponse
 
 from schemas import (
+    AlunoCreate,
+    AlunoOut,
+    AlunoPatch,
     ApiError,
-    DeleteStudentResponse,
+    DeleteAlunoResponse,
+    ResetAlunosResponse,
     SubjectCreate,
     SubjectOut,
-    StudentCreate,
-    StudentOut,
-    StudentPatch,
-    StudentPut,
 )
 from storage import NotFoundError, store
 
-app = FastAPI(title="Middleware FastAPI - Students & Subjects")
+app = FastAPI(title="Middleware FastAPI - Alunos & Disciplinas")
+
+alunos_router = APIRouter(prefix="/api/v1/alunos", tags=["alunos"])
 
 
 @app.exception_handler(NotFoundError)
@@ -23,13 +25,14 @@ def handle_not_found(_, exc: NotFoundError):
     return JSONResponse(status_code=404, content=ApiError(error=str(exc)).model_dump())
 
 
-def student_to_out(student: dict) -> StudentOut:
+def aluno_to_out(student: dict) -> AlunoOut:
     subject_ids = store.student_subject_ids(student["id"])
-    return StudentOut(
+    return AlunoOut(
         id=student["id"],
-        name=student["name"],
+        nome=student["nome"],
         email=student["email"],
-        course=student["course"],
+        curso=student["curso"],
+        matricula=student["matricula"],
         subject_ids=subject_ids,
     )
 
@@ -45,67 +48,66 @@ def subject_to_out(subject: dict, include_student_ids: bool = True) -> SubjectOu
     )
 
 
-# GET (1/2)
-@app.get("/students", response_model=list[StudentOut])
-def get_students():
-    students = store.list_students()
-    return [student_to_out(s) for s in students]
-
-
-# POST (1/2)
-@app.post("/students", response_model=StudentOut, status_code=201)
-def post_student(payload: StudentCreate):
+@alunos_router.post("/", response_model=AlunoOut, status_code=201)
+def post_aluno(payload: AlunoCreate):
     student = store.create_student(payload)
-    return student_to_out(student)
+    return aluno_to_out(student)
 
 
-# PUT (1/2)
-@app.put("/students/{student_id}", response_model=StudentOut)
-def put_student(student_id: str, payload: StudentPut):
-    student = store.put_student(student_id, payload)
-    return student_to_out(student)
+@alunos_router.get("/", response_model=list[AlunoOut])
+def get_alunos():
+    students = store.list_students()
+    return [aluno_to_out(s) for s in students]
 
 
-# PATCH (1/2)
-@app.patch("/students/{student_id}", response_model=StudentOut)
-def patch_student(student_id: str, payload: StudentPatch):
-    student = store.patch_student(student_id, payload)
-    return student_to_out(student)
+@alunos_router.get("/{aluno_id}", response_model=AlunoOut)
+def get_aluno(aluno_id: str):
+    student = store.get_student(aluno_id)
+    return aluno_to_out(student)
 
 
-# DELETE 
-@app.delete("/students/{student_id}", response_model=DeleteStudentResponse)
-def delete_student(student_id: str):
-    store.delete_student(student_id)
-    return DeleteStudentResponse(status="deleted", id=student_id)
+@alunos_router.patch("/{aluno_id}", response_model=AlunoOut)
+def patch_aluno(aluno_id: str, payload: AlunoPatch):
+    student = store.patch_student(aluno_id, payload)
+    return aluno_to_out(student)
 
 
-# GET (2/2)
+@alunos_router.delete("/", response_model=ResetAlunosResponse)
+def delete_all_alunos():
+    removidos = store.clear_all_students()
+    return ResetAlunosResponse(status="reset", removidos=removidos)
+
+
+@alunos_router.delete("/{aluno_id}", response_model=DeleteAlunoResponse)
+def delete_aluno(aluno_id: str):
+    store.delete_student(aluno_id)
+    return DeleteAlunoResponse(status="deleted", id=aluno_id)
+
+
+app.include_router(alunos_router)
+
+
 @app.get("/subjects", response_model=list[SubjectOut])
 def get_subjects():
     subjects = store.list_subjects()
     return [subject_to_out(s) for s in subjects]
 
 
-# POST (2/2)
 @app.post("/subjects", response_model=SubjectOut, status_code=201)
 def post_subject(payload: SubjectCreate):
     subject = store.create_subject(payload)
     return subject_to_out(subject)
 
 
-# PUT (2/2) - enroll
-@app.put("/subjects/{subject_id}/enroll/{student_id}", response_model=SubjectOut)
-def put_enroll(subject_id: str, student_id: str):
-    store.enroll(subject_id, student_id)
+@app.put("/subjects/{subject_id}/enroll/{aluno_id}", response_model=SubjectOut)
+def put_enroll(subject_id: str, aluno_id: str):
+    store.enroll(subject_id, aluno_id)
     subject = store.get_subject(subject_id)
     return subject_to_out(subject)
 
 
-# PATCH (2/2) - unenroll
-@app.patch("/subjects/{subject_id}/unenroll/{student_id}", response_model=SubjectOut)
-def patch_unenroll(subject_id: str, student_id: str):
-    store.unenroll(subject_id, student_id)
+@app.patch("/subjects/{subject_id}/unenroll/{aluno_id}", response_model=SubjectOut)
+def patch_unenroll(subject_id: str, aluno_id: str):
+    store.unenroll(subject_id, aluno_id)
     subject = store.get_subject(subject_id)
     return subject_to_out(subject)
-
