@@ -1,4 +1,0 @@
-Pasta img/ para evidências da atividade.
-
-- requisitos-enunciado.png: captura do enunciado (requisitos).
-- Para o item "prints dos resultados": capture também um print da sua máquina do terminal após `pytest tests/test_api.py -v` (ou da página http://127.0.0.1:8000/docs) e salve aqui, por exemplo como resultado-terminal.png.
