@@ -7,7 +7,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY main.py .
 COPY schemas.py .
+COPY database.py .
+COPY models.py .
 COPY storage.py .
+COPY seed_data.py .
 COPY pytest.ini .
 COPY tests ./tests
 

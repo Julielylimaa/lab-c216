@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -9,8 +10,19 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from main import app
-from storage import store
+os.environ.setdefault(
+    "DATABASE_URL",
+    "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/middleware",
+)
+
+from database import init_db  # noqa: E402
+from main import app  # noqa: E402
+from storage import store  # noqa: E402
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _ensure_db_schema():
+    init_db()
 
 
 @dataclass
@@ -116,6 +128,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int):
     lines.append("")
     lines.append("## O que foi validado")
     lines.append("")
+    lines.append("- Persistência em **PostgreSQL** (SQLAlchemy + `DATABASE_URL`).")
     lines.append("- CRUD de **alunos** em `/api/v1/alunos/` (criação, listagem, GET por ID, PATCH, DELETE, reset).")
     lines.append("- CRUD básico de **matérias** (criação, listagem com `enrolled_count`).")
     lines.append("- **Matrícula** e **desmatrícula** de estudante em matéria.")

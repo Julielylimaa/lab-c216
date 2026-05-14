@@ -196,3 +196,30 @@ def test_not_found_returns_404(api):
     r = api.delete("/api/v1/alunos/GES999")
     assert r.status_code == 404
     assert r.json()["error"] == "Aluno não encontrado."
+
+
+def test_persistencia_dados_no_postgresql(api):
+    """Confirma que o registro permanece consultável diretamente no banco após a API."""
+    from database import SessionLocal
+    from models import Student
+
+    r = api.post(
+        "/api/v1/alunos/",
+        json_body={
+            "nome": "Persistência",
+            "email": "persiste@example.com",
+            "curso": "GES",
+        },
+    )
+    assert r.status_code == 201
+    aluno_id = r.json()["id"]
+
+    with SessionLocal() as session:
+        row = session.get(Student, aluno_id)
+        assert row is not None
+        assert row.nome == "Persistência"
+        assert row.email == "persiste@example.com"
+
+    r2 = api.get(f"/api/v1/alunos/{aluno_id}")
+    assert r2.status_code == 200
+    assert r2.json()["nome"] == "Persistência"

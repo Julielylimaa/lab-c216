@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import JSONResponse
 
+from database import init_db
 from schemas import (
     AlunoCreate,
     AlunoOut,
@@ -15,7 +18,14 @@ from schemas import (
 )
 from storage import NotFoundError, store
 
-app = FastAPI(title="Middleware FastAPI - Alunos & Disciplinas")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="Middleware FastAPI - Alunos & Disciplinas", lifespan=lifespan)
 
 alunos_router = APIRouter(prefix="/api/v1/alunos", tags=["alunos"])
 
