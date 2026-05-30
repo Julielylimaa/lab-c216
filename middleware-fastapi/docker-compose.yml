@@ -27,3 +27,14 @@ services:
         condition: service_healthy
     volumes:
       - ./backend/tests/reports:/app/backend/tests/reports
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"
+    environment:
+      - API_BASE_URL=http://api:8000
+    depends_on:
+      - api

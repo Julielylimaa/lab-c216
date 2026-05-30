@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Editar aluno · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Editar aluno</h1>
+  <p>Atualize os dados de <code>{{ aluno.id }}</code>.</p>
+</section>
+
+<section class="card form-page">
+  <form method="post" action="{{ url_for('aluno_editar', aluno_id=aluno.id) }}" class="form">
+    <label>
+      Nome
+      <input type="text" name="nome" required maxlength="120" value="{{ aluno.nome }}" />
+    </label>
+    <label>
+      E-mail
+      <input type="email" name="email" required maxlength="254" value="{{ aluno.email }}" />
+    </label>
+    <label>
+      Curso
+      <select name="curso" required>
+        <option value="GES" {% if aluno.curso == 'GES' %}selected{% endif %}>GES</option>
+        <option value="GEC" {% if aluno.curso == 'GEC' %}selected{% endif %}>GEC</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="{{ url_for('index') }}" class="btn btn-ghost">Voltar</a>
+    </div>
+  </form>
+</section>
+
+<section class="card form-page">
+  <h2>Disciplinas matriculadas</h2>
+  {% if enrolled_subjects %}
+  <ul class="enrolled-tags">
+    {% for subject in enrolled_subjects %}
+    <li><span class="tag">{{ subject.code }} — {{ subject.name }}</span></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">Nenhuma disciplina matriculada.</p>
+  {% endif %}
+
+  {% if available_subjects %}
+  <h2 class="section-subtitle">Matricular em nova disciplina</h2>
+  <form
+    method="post"
+    action="{{ url_for('aluno_matricular', aluno_id=aluno.id) }}"
+    class="form enroll-form"
+  >
+    <label>
+      Disciplina
+      <div class="combobox" data-combobox>
+        <input
+          type="text"
+          class="combobox-input"
+          placeholder="Digite o nome ou código da disciplina..."
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+        />
+        <input type="hidden" name="subject_id" class="combobox-value" value="" />
+        <ul class="combobox-list" role="listbox" hidden>
+          {% for subject in available_subjects %}
+          <li
+            class="combobox-option"
+            role="option"
+            data-id="{{ subject.id }}"
+            data-label="{{ subject.code }} — {{ subject.name }}"
+            data-search="{{ subject.code | lower }} {{ subject.name | lower }}"
+          >
+            {{ subject.code }} — {{ subject.name }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Matricular</button>
+    </div>
+  </form>
+  {% else %}
+  <p class="empty">Todas as disciplinas disponíveis já estão matriculadas.</p>
+  {% endif %}
+</section>
+{% endblock %}

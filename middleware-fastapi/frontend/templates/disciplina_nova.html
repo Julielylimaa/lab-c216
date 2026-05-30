@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar disciplina · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Cadastrar nova Disciplina</h1>
+  <p>Informe o código e o nome da disciplina.</p>
+</section>
+
+<section class="card form-page">
+  <form method="post" action="{{ url_for('disciplina_nova') }}" class="form">
+    <label>
+      Código
+      <input
+        type="text"
+        name="code"
+        required
+        maxlength="16"
+        placeholder="MAT101"
+        pattern="[A-Za-z]{2,10}[0-9]{0,6}"
+        title="2 a 10 letras seguidas de até 6 dígitos (ex.: MAT101)"
+        value="{{ form.code if form else '' }}"
+      />
+      <span class="field-hint">Formato: 2–10 letras + até 6 dígitos (ex.: MAT101, GES, CALCULO1)</span>
+    </label>
+    <label>
+      Nome
+      <input
+        type="text"
+        name="name"
+        required
+        maxlength="120"
+        placeholder="Cálculo I"
+        value="{{ form.name if form else '' }}"
+      />
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="{{ url_for('index') }}" class="btn btn-ghost">Voltar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar aluno · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Cadastrar novo aluno</h1>
+  <p>Preencha os dados para criar um aluno (GES ou GEC).</p>
+</section>
+
+<section class="card form-page">
+  <form method="post" action="{{ url_for('aluno_novo') }}" class="form">
+    <label>
+      Nome
+      <input
+        type="text"
+        name="nome"
+        required
+        maxlength="120"
+        placeholder="Maria Silva"
+        value="{{ form.nome if form else '' }}"
+      />
+    </label>
+    <label>
+      E-mail
+      <input
+        type="email"
+        name="email"
+        required
+        maxlength="254"
+        placeholder="maria@example.com"
+        value="{{ form.email if form else '' }}"
+      />
+    </label>
+    <label>
+      Curso
+      <select name="curso" required>
+        <option value="">Selecione</option>
+        <option value="GES" {% if form and form.curso == 'GES' %}selected{% endif %}>GES</option>
+        <option value="GEC" {% if form and form.curso == 'GEC' %}selected{% endif %}>GEC</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="{{ url_for('index') }}" class="btn btn-ghost">Voltar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

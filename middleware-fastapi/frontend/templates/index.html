@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Início · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Gerenciador de Alunos</h1>
+  <p>Listagem de alunos e disciplinas.</p>
+</section>
+
+{% if alunos_err %}
+<div class="alert alert-error">{{ alunos_err.flash_message() | safe }}</div>
+{% endif %}
+{% if subjects_err %}
+<div class="alert alert-error">{{ subjects_err.flash_message() | safe }}</div>
+{% endif %}
+
+<section class="card">
+  <div class="card-header">
+    <h2>Alunos cadastrados</h2>
+    <div class="card-header-actions">
+      {% if alunos %}
+      <form
+        method="post"
+        action="{{ url_for('reset_alunos') }}"
+        class="inline"
+        onsubmit="return confirm('Remover todos os alunos?');"
+      >
+        <button type="submit" class="btn btn-danger btn-sm">Limpar todos</button>
+      </form>
+      {% endif %}
+      <a href="{{ url_for('aluno_novo') }}" class="btn btn-primary btn-sm">Cadastrar novo aluno</a>
+    </div>
+  </div>
+
+  {% if alunos %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Matrícula</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Curso</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for aluno in alunos %}
+        <tr>
+          <td><code>{{ aluno.id }}</code></td>
+          <td>{{ aluno.matricula }}</td>
+          <td>{{ aluno.nome }}</td>
+          <td>{{ aluno.email }}</td>
+          <td><span class="badge">{{ aluno.curso }}</span></td>
+          <td class="actions">
+            <a href="{{ url_for('aluno_editar', aluno_id=aluno.id) }}" class="btn btn-ghost btn-sm">Editar</a>
+            <form
+              method="post"
+              action="{{ url_for('delete_aluno', aluno_id=aluno.id) }}"
+              class="inline"
+              onsubmit="return confirm('Remover {{ aluno.id }}?');"
+            >
+              <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">Nenhum aluno cadastrado.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <div class="card-header">
+    <h2>Disciplinas</h2>
+    <div class="card-header-actions">
+      <a href="{{ url_for('disciplina_nova') }}" class="btn btn-primary btn-sm">Cadastrar nova Disciplina</a>
+    </div>
+  </div>
+
+  {% if subjects %}
+  <div class="table-wrap">
+    <table class="subjects-table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nome</th>
+          <th>Matriculados</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subject in subjects %}
+        <tr
+          class="subject-row"
+          data-target="subject-details-{{ loop.index }}"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+        >
+          <td><strong>{{ subject.code }}</strong></td>
+          <td>{{ subject.name }}</td>
+          <td>{{ subject.enrolled_count }}</td>
+        </tr>
+        <tr id="subject-details-{{ loop.index }}" class="subject-details" hidden>
+          <td colspan="3">
+            {% if subject.enrolled_names %}
+            <ul class="enrolled-list">
+              {% for nome in subject.enrolled_names %}
+              <li>{{ nome }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-details">Ainda não possui alunos matriculados nessa disciplina</p>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">Nenhuma disciplina cadastrada.</p>
+  {% endif %}
+</section>
+{% endblock %}

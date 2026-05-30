@@ -15,8 +15,9 @@ Na pasta `middleware-fastapi/`:
 docker compose up --build
 ```
 
-O Compose sobe o **PostgreSQL** (`db`) e a API (`api`). A API recebe `DATABASE_URL` apontando para o serviço `db`.
+O Compose sobe o **PostgreSQL** (`db`), a API (`api`) e o **frontend Flask** (`frontend`).
 
+- Frontend: **http://127.0.0.1:5001** (porta 5001 no host; 5000 costuma estar ocupada no macOS pelo AirPlay)
 - A API sobe em **http://127.0.0.1:8000**
 - Documentação interativa: **http://127.0.0.1:8000/docs** (Swagger) ou **http://127.0.0.1:8000/redoc**
 
@@ -95,8 +96,12 @@ docker compose run --rm api pytest backend/tests/test_api.py -v
 | `backend/models.py` / `backend/db/database.py` | ORM e engine (`DATABASE_URL`) |
 | `backend/tests/`  | Testes com `TestClient` (FastAPI)  |
 | `backend/Dockerfile` | Imagem Python 3.12 + dependências |
+| `frontend/app.py` | App Flask (consome a API) |
+| `frontend/templates/` | Páginas HTML (index, about) |
+| `frontend/static/` | CSS e assets estáticos |
+| `frontend/Dockerfile` | Imagem do frontend Flask |
 | `prints/`         | Prints / evidências da atividade   |
-| `docker-compose.yml` | PostgreSQL (`db`) + API (`api`)   |
+| `docker-compose.yml` | PostgreSQL + API + frontend |
 
 ## Resumo
 
