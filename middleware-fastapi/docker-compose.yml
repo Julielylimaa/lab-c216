@@ -15,7 +15,7 @@ services:
 
   api:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -26,4 +26,4 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./tests/reports:/app/tests/reports
+      - ./backend/tests/reports:/app/backend/tests/reports

@@ -200,8 +200,8 @@ def test_not_found_returns_404(api):
 
 def test_persistencia_dados_no_postgresql(api):
     """Confirma que o registro permanece consultável diretamente no banco após a API."""
-    from database import SessionLocal
-    from models import Student
+    from backend.db.database import SessionLocal
+    from backend.models import Student
 
     r = api.post(
         "/api/v1/alunos/",

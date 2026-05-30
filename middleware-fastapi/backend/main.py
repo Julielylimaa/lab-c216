@@ -5,8 +5,8 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import JSONResponse
 
-from database import init_db
-from schemas import (
+from backend.db.database import init_db
+from backend.schemas import (
     AlunoCreate,
     AlunoOut,
     AlunoPatch,
@@ -16,7 +16,7 @@ from schemas import (
     SubjectCreate,
     SubjectOut,
 )
-from storage import NotFoundError, store
+from backend.storage import NotFoundError, store
 
 
 @asynccontextmanager

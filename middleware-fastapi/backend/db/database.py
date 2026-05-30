@@ -5,7 +5,7 @@ import os
 from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from models import Base, IdSeq, MatriculaSeq
+from backend.models import Base, IdSeq, MatriculaSeq
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",

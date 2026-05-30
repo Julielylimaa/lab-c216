@@ -15,9 +15,9 @@ os.environ.setdefault(
     "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/middleware",
 )
 
-from database import init_db  # noqa: E402
-from main import app  # noqa: E402
-from storage import store  # noqa: E402
+from backend.db.database import init_db  # noqa: E402
+from backend.main import app  # noqa: E402
+from backend.storage import store  # noqa: E402
 
 
 @pytest.fixture(scope="session", autouse=True)

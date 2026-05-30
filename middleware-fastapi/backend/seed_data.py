@@ -6,16 +6,17 @@ Idempotente: ignora e-mails e códigos de disciplina já existentes.
 
 Uso (com o banco no ar):
   export DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:5432/middleware
-  python seed_data.py
+  python -m backend.seed_data
 """
 
 from __future__ import annotations
 
-from database import SessionLocal, init_db
-from models import Enrollment, Student, Subject
-from schemas import AlunoCreate, SubjectCreate
 from sqlalchemy import select
-from storage import store
+
+from backend.db.database import SessionLocal, init_db
+from backend.models import Enrollment, Student, Subject
+from backend.schemas import AlunoCreate, SubjectCreate
+from backend.storage import store
 
 ALUNOS_SEED: list[tuple[str, str, str]] = [
     ("Beatriz Almeida", "beatriz.almeida.seed@example.com", "GES"),

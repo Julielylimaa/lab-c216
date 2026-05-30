@@ -2,7 +2,7 @@
 
 # Relatório de testes (pytest)
 
-- Gerado em: 2026-05-14T00:44:20.094216+00:00
+- Gerado em: 2026-05-30T20:18:20.080735+00:00
 - Exit status: 0
 
 ## O que foi validado

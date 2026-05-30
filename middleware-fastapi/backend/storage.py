@@ -3,9 +3,9 @@ from __future__ import annotations
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.orm import Session
 
-from database import SessionLocal, seed_sequence_rows
-from models import Enrollment, IdSeq, MatriculaSeq, Student, Subject
-from schemas import AlunoCreate, AlunoPatch, SubjectCreate
+from backend.db.database import SessionLocal, seed_sequence_rows
+from backend.models import Enrollment, IdSeq, MatriculaSeq, Student, Subject
+from backend.schemas import AlunoCreate, AlunoPatch, SubjectCreate
 
 
 class NotFoundError(Exception):
