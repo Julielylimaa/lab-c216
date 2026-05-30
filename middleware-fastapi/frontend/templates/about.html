@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Sobre · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Sobre</h1>
+  <p>Informações da autora deste projeto.</p>
+</section>
+
+<section class="card info-card">
+  <h2>Dados pessoais</h2>
+  <dl class="info-list">
+    <div class="info-row">
+      <dt>Nome</dt>
+      <dd>{{ author_name }}</dd>
+    </div>
+    <div class="info-row">
+      <dt>Matrícula</dt>
+      <dd>{{ author_matricula }}</dd>
+    </div>
+    <div class="info-row">
+      <dt>Instituição</dt>
+      <dd>INATEL — Instituto Nacional de Telecomunicações</dd>
+    </div>
+    <div class="info-row">
+      <dt>Disciplina</dt>
+      <dd>C216 — Laboratório de Software</dd>
+    </div>
+  </dl>
+
+  <h2>Sobre o projeto</h2>
+  <p>
+    Aplicação web desenvolvida em <strong>Flask</strong> que consome a API
+    <strong>FastAPI</strong> para gerenciamento de alunos e disciplinas, com
+    persistência em <strong>PostgreSQL</strong>.
+  </p>
+</section>
+{% endblock %}

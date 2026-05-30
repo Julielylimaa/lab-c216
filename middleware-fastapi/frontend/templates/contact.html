@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Contato · Gerenciador de Alunos{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Contato</h1>
+  <p>Informações fictícias para contato.</p>
+</section>
+
+<section class="card info-card">
+  <h2>Fale comigo</h2>
+  <dl class="info-list">
+    <div class="info-row">
+      <dt>Nome</dt>
+      <dd>{{ author_name }}</dd>
+    </div>
+    <div class="info-row">
+      <dt>E-mail</dt>
+      <dd><a href="mailto:{{ author_email }}">{{ author_email }}</a></dd>
+    </div>
+    <div class="info-row">
+      <dt>Telefone</dt>
+      <dd>(35) 3471-9000</dd>
+    </div>
+    <div class="info-row">
+      <dt>Endereço</dt>
+      <dd>Av. João de Almeida, 765 — Santa Rita do Sapucaí, MG</dd>
+    </div>
+    <div class="info-row">
+      <dt>Horário de atendimento</dt>
+      <dd>Segunda a sexta, 8h às 18h</dd>
+    </div>
+  </dl>
+</section>
+{% endblock %}

@@ -10,8 +10,21 @@ from markupsafe import Markup
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
 
+AUTHOR_NAME = "Juliely Lima"
+AUTHOR_MATRICULA = "400"
+AUTHOR_EMAIL = "juliely@inatel.com"
+
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-in-production")
+
+
+@app.context_processor
+def inject_author():
+    return {
+        "author_name": AUTHOR_NAME,
+        "author_matricula": AUTHOR_MATRICULA,
+        "author_email": AUTHOR_EMAIL,
+    }
 
 FIELD_LABELS: dict[str, str] = {
     "nome": "Nome",
@@ -254,6 +267,16 @@ def _load_dashboard() -> dict[str, Any]:
 @app.route("/")
 def index():
     return render_template("index.html", **_load_dashboard())
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 
 @app.route("/alunos/novo", methods=["GET", "POST"])
